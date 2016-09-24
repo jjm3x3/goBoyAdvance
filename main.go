@@ -46,13 +46,25 @@ func main() {
 }
 
 func execute(byte int16) {
-	if byte == 0x11 || byte == 0x21 || byte == 0x31 || byte == 0x41 {
+	if byte == 0x01 || byte == 0x11 || byte == 0x21 || byte == 0x31 {
 		fmt.Printf("this is ld dd,nn (load imidate)")
 		copc.reg_pc++
 		secondPart := getXByte(copc.reg_pc)
 		copc.reg_pc++
 		firstPart := getXByte(copc.reg_pc)
 		fmt.Printf("loading this address: %x %x\n", firstPart, secondPart)
+	} else if byte == 0xaf { // as found on page 60
+		fmt.Printf("this is an XOR on the A reg\n")
+	} else if byte == 0x32 { // as found on page 97
+		copc.reg_pc++
+		secondPart := getXByte(copc.reg_pc)
+		copc.reg_pc++
+		firstPart := getXByte(copc.reg_pc)
+		fmt.Printf("found a ld (nn), A instruction on address: %x %x\n", firstPart, secondPart)
+	} else if byte == 0x20 { // as found on page 248
+		copc.reg_pc++
+		offset := getXByte(copc.reg_pc)
+		fmt.Printf("this is JR NZ,e with opperand: %x\n", offset)
 	} else {
 		fmt.Printf("this is: %x\n", byte)
 	}
